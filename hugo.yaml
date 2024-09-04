@@ -1,3 +1,7 @@
-baseURL: https://example.org/
+baseURL: /
 languageCode: en-us
-title: My New Hugo Site
+title: Skate
+
+module:
+  imports:
+  - path: github.com/imfing/hextra
