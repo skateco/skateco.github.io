@@ -87,6 +87,49 @@ EOF
 Check the deployment
 
 ```shell   
-skate get deployment -n my-app
+skate get deployment
 ```
 
+Now you can create a service:
+
+```shell
+cat <<EOF | skate apply -f -
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: my-app
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+```
+
+```shell   
+skate get service
+```
+
+And finally an ingress:
+
+```shell
+cat <<EOF | skate apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: public
+  namespace: my-app
+spec:
+  rules:
+  - host: nginx.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx.my-app
+            port:
+              number: 80
+```
