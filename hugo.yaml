@@ -22,6 +22,11 @@ menu:
     pageRef: /docs
     weight: 1
     params: {}
+  - name: GitHub
+    weight: 6
+    url: "https://github.com/skateco/skate"
+    params:
+      icon: github
 
   sidebar:
   - name: More
