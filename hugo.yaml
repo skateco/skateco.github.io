@@ -18,10 +18,19 @@ markup:
 
 menu:
   main:
-  - name: Getting Started
-    pageRef: /getting-started
+  - name: Documentation
+    pageRef: /docs
     weight: 1
     params: {}
+
+  sidebar:
+  - name: More
+    params:
+      type: separator
+    weight: 1
+  - name: "About"
+    pageRef: "/about"
+    weight: 2
 
 params:
   navbar:
@@ -35,3 +44,6 @@ params:
   editURL:
     enable: false
 #    base: "https://github.com/imfing/hextra-starter-template/edit/main/content"
+  theme:
+    default: system
+    displayToggle: true

@@ -5,4 +5,6 @@ draft = false
 type = 'docs'
 prev = 'getting-started'
 next = 'components/'
+[sidebar]
+open = true
 +++

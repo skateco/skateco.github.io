@@ -11,7 +11,7 @@ To play around I suggest using [multipass](https://multipass.run/) to create a f
 You can use [./hack/clusterplz](./hack/clusterplz) to create a cluster of 2 nodes easily using multipass.
 Skate only supports private key authentication for now, so make sure your nodes are set up to allow your key.
 
-```shell
+```shell {filename=Shell}
 ./hack/clusterplz create
 ```
 
@@ -121,6 +121,8 @@ metadata:
   name: public
   namespace: my-app
 spec:
+  selector:
+    app.kubernetes.io/name: nginx
   rules:
   - host: nginx.example.com
     http:
