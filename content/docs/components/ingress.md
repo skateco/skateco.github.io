@@ -15,7 +15,7 @@ Supported annotations:
 
 
 ```shell
-cat <<EOF | kubectl apply -f -
+cat <<EOF | skate apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -38,7 +38,7 @@ EOF
 
 In order to enable production TLS, you need to instruct skate to use LetsEncrypt's production environment:
 ```shell
-cat <<EOF | kubectl apply -f -    
+cat <<EOF | skate apply -f -    
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
