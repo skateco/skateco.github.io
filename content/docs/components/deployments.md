@@ -7,7 +7,7 @@ type="docs"
 
 
 ```shell
-cat <<<EOF | skate apply -f -
+cat <<EOF | skate apply -f -
 ---
 apiVersion: apps/v1
 kind: Deployment

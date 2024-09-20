@@ -13,7 +13,7 @@ The following will create a service listening on port 80 with name `nginx.my-app
 `nginx` in namespace `my-app` on port 80.
 
 ```shell
-cat <<<EOF | skate apply -f -
+cat <<EOF | skate apply -f -
 apiVersion: v1
 kind: Service
 metadata:

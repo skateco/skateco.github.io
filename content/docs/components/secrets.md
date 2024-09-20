@@ -8,7 +8,7 @@ type="docs"
 Secrets are scheduled across all nodes in the cluster, stored as [podman secrets](https://docs.podman.io/en/latest/markdown/podman-secret-create.1.html)
 
 ```shell
-cat <<<EOF | skate apply -f -
+cat <<EOF | skate apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
