@@ -12,6 +12,8 @@ You can use [./hack/clusterplz](./hack/clusterplz) to create a cluster of 2 node
 Skate only supports private key authentication for now, so make sure your nodes are set up to allow your key.
 
 ```shell {filename=Shell}
+# assumes an ssh priv pub key combo ~/.ssh/id_rsa & ~/.ssh/id_rsa.pub that it will add to the vm host's authorized_keys
+# create a hack/.clusterplz.env file with SSH_PRIVATE_KEY and SSH_PUBLIC_KEY set to override this
 ./hack/clusterplz create
 ```
 
@@ -30,7 +32,8 @@ Put it in your path.
 
 Now, let's register a cluster:
 
-*Note: Change ~/.ssh/id_rsa to the path to the private key that can access your nodes*
+*Note: Change ~/.ssh/id_rsa to the path to the private key that can access your nodes*.
+*Should be the same that was used with the `clusterplz` script*
 
 ```shell
 skate create cluster my-cluster --default-user $USER --default-key ~/.ssh/id_rsa
