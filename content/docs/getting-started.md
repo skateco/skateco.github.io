@@ -42,11 +42,13 @@ skate create cluster my-cluster --default-user $USER --default-key ~/.ssh/id_rsa
 Add the nodes:
 
 ```shell
+# get our node ips
 > ./hack/clusterplz ips
 192.168.76.11
 192.168.76.12
 
-# The --subnet-cidr has to be unique per node
+# Provision each node with skatelet and everything else that skate needs
+# NOTE: The --subnet-cidr has to be unique per node
 > skate create node --name node-1 --host 192.168.76.11 --subnet-cidr 20.1.0.0/16
 ...
 ... much install
@@ -61,6 +63,7 @@ Add the nodes:
 Ok, now we should have a 2 node cluster that we can deploy to.
 
 ```shell
+# list the nodes to be sure
 > skate get nodes
 NAME                            PODS        STATUS    
 node-1                          2           Healthy   
@@ -70,6 +73,7 @@ node-2                          2           Healthy
 Create a deployment
 
 ```shell
+# creates an nginx deployment with 2 replicas
 cat <<EOF | skate apply -f -
 ---
 apiVersion: apps/v1
@@ -91,6 +95,9 @@ Check the deployment
 
 ```shell   
 skate get deployment
+
+NAMESPACE  NAME   READY  UPTODATE  AVAILABLE  AGE 
+my-app     nginx  2/2    2         2          45s 
 ```
 
 Now you can create a service:
@@ -104,14 +111,20 @@ metadata:
   name: nginx
   namespace: my-app
 spec:
+  selector:
+    app.kubernetes.io/name: nginx
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
+EOF
 ```
 
 ```shell   
 skate get service
+
+NAMESPACE  NAME   CLUSTERIP  EXTERNALIP  PORTS  AGE 
+my-app     nginx  -          -           80     10s 
 ```
 
 And finally an ingress:
@@ -123,9 +136,10 @@ kind: Ingress
 metadata:
   name: public
   namespace: my-app
+  annotations:
+    # since the vm cluster isn't public, letsencrypt wont work, so turn off redirect so we can test
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
-  selector:
-    app.kubernetes.io/name: nginx
   rules:
   - host: nginx.example.com
     http:
@@ -137,4 +151,42 @@ spec:
             name: nginx.my-app
             port:
               number: 80
+EOF
 ```
+
+Now let's do a quick request against the cluster:
+```shell
+# 192.168.76.11 is a node-ip from hack/clusterplz ips
+curl --header "Host: nginx.example.com" --insecure  http://192.168.76.11
+```
+
+```shell
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
+Great Success!!
+
+Now you've deployed a webservice available via the ingress.
