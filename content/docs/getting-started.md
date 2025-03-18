@@ -7,33 +7,36 @@ prev = '/'
 next = 'components/'
 +++
 
-To play around I suggest using [multipass](https://multipass.run/) to create a few Ubuntu VMs.
-You can use [./hack/clusterplz](./hack/clusterplz) to create a cluster of 2 nodes easily using multipass.
-Skate only supports private key authentication for now, so make sure your nodes are set up to allow your key.
+To play around I suggest using Skate in Docker (SIND) to run a local cluster.
+You can use [./hack/sindplz](./hack/sindplz) to create a cluster of 2 nodes.
 
 ```shell {filename=Shell}
-# assumes an ssh priv pub key combo ~/.ssh/id_rsa & ~/.ssh/id_rsa.pub that it will add to the vm host's authorized_keys
-# create a hack/.clusterplz.env file with SSH_PRIVATE_KEY and SSH_PUBLIC_KEY set to override this
-./hack/clusterplz create
+# assumes an ssh priv pub key combo ~/.ssh/id_rsa & ~/.ssh/id_rsa.pub that it will add to the container host's authorized_keys
+# create a hack/.sindplz.env file with SSH_PRIVATE_KEY and SSH_PUBLIC_KEY set to override this
+./hack/sindplz create
 ```
 
-BTW: you can use `./hack/clusterplz restore` to restore a clean snapshot of the nodes if things get messed up.
+BTW: you can run `./hack/sindplz create` again to run a new cluster if things get messed up.
 
-Install the skate CLI:
+
+Download the `skate` binary for your platform and architecture.
 
 ```shell
 # Get list of latest release binaries
 curl -s https://api.github.com/repos/skateco/skate/releases/latest | grep "browser_download_url.*tar.gz" | cut -d : -f 2,3 | tr -d \\\" | tr -d "[:blank:]"|grep -v skatelet
 ```
 
-Download the `skate` binary for your platform and architecture.
 
 Put it in your path.
+```shell
+# feel free to put it whereever but if you don't care...
+sudo mv skate /usr/local/bin
+```
 
 Now, let's register a cluster:
 
 *Note: Change ~/.ssh/id_rsa to the path to the private key that can access your nodes*.
-*Should be the same that was used with the `clusterplz` script*
+*Should be the same that was used with the `sindplz` script*
 
 ```shell
 skate create cluster my-cluster --default-user $USER --default-key ~/.ssh/id_rsa
@@ -42,22 +45,8 @@ skate create cluster my-cluster --default-user $USER --default-key ~/.ssh/id_rsa
 Add the nodes:
 
 ```shell
-# get our node ips
-> ./hack/clusterplz ips
-192.168.76.11
-192.168.76.12
-
-# Provision each node with skatelet and everything else that skate needs
-# NOTE: The --subnet-cidr has to be unique per node
-> skate create node --name node-1 --host 192.168.76.11 --subnet-cidr 20.1.0.0/16
-...
-... much install
-
-> skate create node --name node-2 --host 192.168.76.12 --subnet-cidr 20.2.0.0/16
-
-...
-... much install
-
+# automatically terraform the 2 nodes
+> ./hack/sindplz skate
 ```
 
 Ok, now we should have a 2 node cluster that we can deploy to.
@@ -156,37 +145,18 @@ EOF
 
 Now let's do a quick request against the cluster:
 ```shell
-# 192.168.76.11 is a node-ip from hack/clusterplz ips
+# 192.168.76.11 is a node-ip from hack/sindplz ips
 curl --header "Host: nginx.example.com" --insecure  http://192.168.76.11
 ```
 
+You should see something like this:
 ```shell
 <!DOCTYPE html>
 <html>
 <head>
 <title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
-</head>
-<body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
-
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
-
-<p><em>Thank you for using nginx.</em></p>
-</body>
-</html>
+...
 ```
 Great Success!!
 
-Now you've deployed a webservice available via the ingress.
+Now you've deployed a webservice across 2 nodes available via the ingress.
