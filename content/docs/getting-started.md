@@ -7,31 +7,28 @@ prev = '/'
 next = 'components/'
 +++
 
-To play around I suggest using Skate in Docker (SIND) to run a local cluster.
-You can use [./hack/sindplz](./hack/sindplz) to create a cluster of 2 nodes.
+Install the `skate` binary for your platform and architecture.
+
+```shell
+curl -sL https://raw.githubusercontent.com/skateco/skate/refs/heads/main/hack/install-skate.sh | bash
+```
+
+To play around I suggest using Skate in Docker (sind) to run a local cluster.
 
 ```shell {filename=Shell}
-# assumes an ssh priv pub key combo ~/.ssh/id_rsa & ~/.ssh/id_rsa.pub that it will add to the container host's authorized_keys
-# create a hack/.sindplz.env file with SSH_PRIVATE_KEY and SSH_PUBLIC_KEY set to override this
-./hack/sindplz create
+curl -sL https://raw.githubusercontent.com/skateco/skate/refs/heads/main/hack/install-sind.sh | bash
 ```
 
-BTW: you can run `./hack/sindplz create` again to run a new cluster if things get messed up.
-
-
-Download the `skate` binary for your platform and architecture.
+Create the skate-in-docker cluster:
 
 ```shell
-# Get list of latest release binaries
-curl -s https://api.github.com/repos/skateco/skate/releases/latest | grep "browser_download_url.*tar.gz" | cut -d : -f 2,3 | tr -d \\\" | tr -d "[:blank:]"|grep -v skatelet
+sind create --ssh-private-key ~/.ssh/<some-private-ssh-key> --ssh-public-key ~/.ssh/<some-public-ssh-key>
 ```
 
 
-Put it in your path.
-```shell
-# feel free to put it whereever but if you don't care...
-sudo mv skate /usr/local/bin
-```
+BTW: you can run `sind remove` followed by `sind create...` again to run a new cluster if things get messed up.
+
+
 
 Now, let's register a cluster:
 
@@ -46,7 +43,7 @@ Add the nodes:
 
 ```shell
 # automatically terraform the 2 nodes
-> ./hack/sindplz skate
+> sind skate
 ```
 
 Ok, now we should have a 2 node cluster that we can deploy to.
@@ -145,7 +142,7 @@ EOF
 
 Now let's do a quick request against the cluster:
 ```shell
-# 192.168.76.11 is a node-ip from hack/sindplz ips
+# 192.168.76.11 is a node-ip from `sind ports`
 curl --header "Host: nginx.example.com" --insecure  http://192.168.76.11
 ```
 
