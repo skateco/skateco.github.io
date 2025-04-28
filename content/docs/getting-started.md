@@ -54,8 +54,8 @@ Ok, now we should have a 2 node cluster that we can deploy to.
 # list the nodes to be sure
 > skate get nodes
 NAME                            PODS        STATUS    
-node-1                          2           Healthy   
-node-2                          2           Healthy  
+sind-node-1                          2           Healthy   
+sind-node-2                          2           Healthy  
 ```
 
 Create a deployment
