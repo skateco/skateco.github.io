@@ -7,47 +7,46 @@ prev = '/'
 next = 'components/'
 +++
 
-To play around I suggest using Skate in Docker (SIND) to run a local cluster.
-You can use [./hack/sindplz](./hack/sindplz) to create a cluster of 2 nodes.
+Install the `skate` binary for your platform and architecture.
+
+```shell
+curl -sL https://raw.githubusercontent.com/skateco/skate/refs/heads/main/hack/install-skate.sh | bash
+```
+
+To play around I suggest using Skate in Docker (sind) to run a local cluster.
 
 ```shell {filename=Shell}
-# assumes an ssh priv pub key combo ~/.ssh/id_rsa & ~/.ssh/id_rsa.pub that it will add to the container host's authorized_keys
-# create a hack/.sindplz.env file with SSH_PRIVATE_KEY and SSH_PUBLIC_KEY set to override this
-./hack/sindplz create
+curl -sL https://raw.githubusercontent.com/skateco/skate/refs/heads/main/hack/install-sind.sh | bash
 ```
 
-BTW: you can run `./hack/sindplz create` again to run a new cluster if things get messed up.
-
-
-Download the `skate` binary for your platform and architecture.
+Create the skate-in-docker cluster:
 
 ```shell
-# Get list of latest release binaries
-curl -s https://api.github.com/repos/skateco/skate/releases/latest | grep "browser_download_url.*tar.gz" | cut -d : -f 2,3 | tr -d \\\" | tr -d "[:blank:]"|grep -v skatelet
+sind create --ssh-private-key ~/.ssh/<some-private-ssh-key> --ssh-public-key ~/.ssh/<some-public-ssh-key>
 ```
 
 
-Put it in your path.
-```shell
-# feel free to put it whereever but if you don't care...
-sudo mv skate /usr/local/bin
-```
+> **_BTW:_**
+> You can run `sind remove` followed by `sind create ...` again to run a new cluster if things get messed up.
 
-Now, let's register a cluster:
 
-*Note: Change ~/.ssh/id_rsa to the path to the private key that can access your nodes*.
-*Should be the same that was used with the `sindplz` script*
 
-```shell
-skate create cluster my-cluster --default-user $USER --default-key ~/.ssh/id_rsa
-```
+> **_NOTE:_**
+> `sind` automatically creates the cluster via skate.
+> To do this normally you have to run the following:
+> 
+> ```shell
+> skate create cluster my-cluster --default-user <valid ssh user> --default-key ~/.ssh/<some ssh public key>
+> skate config use-context my-cluster
+> ```
+> And then add the nodes:
+> 
+> ```shell
+> 
+> skate create node --name node-1 --subnet-cidr 20.1.0.0/16 --host <ip> --peer-host <ip wrt other hosts>
+> skate create node --name node-2 --subnet-cidr 20.2.0.0/16 --host <ip> --peer-host <ip wrt other hosts>
+> ```
 
-Add the nodes:
-
-```shell
-# automatically terraform the 2 nodes
-> ./hack/sindplz skate
-```
 
 Ok, now we should have a 2 node cluster that we can deploy to.
 
@@ -55,8 +54,8 @@ Ok, now we should have a 2 node cluster that we can deploy to.
 # list the nodes to be sure
 > skate get nodes
 NAME                            PODS        STATUS    
-node-1                          2           Healthy   
-node-2                          2           Healthy  
+sind-node-1                          2           Healthy   
+sind-node-2                          2           Healthy  
 ```
 
 Create a deployment
@@ -145,7 +144,7 @@ EOF
 
 Now let's do a quick request against the cluster:
 ```shell
-# 192.168.76.11 is a node-ip from hack/sindplz ips
+# 192.168.76.11 is a node-ip from `sind ports`
 curl --header "Host: nginx.example.com" --insecure  http://192.168.76.11
 ```
 

@@ -22,6 +22,13 @@ Deploy to skate using the same k8s manifests you already know, but skip the enor
 - **Battery-included** - Ingress resources get LetsEncrypt TLS by default.
 
 
+## Install
+
+```shell
+curl -sL https://raw.githubusercontent.com/skateco/skate/refs/heads/main/hack/install-skate.sh |bash
+```
+
+
 ## Questions or Feedback?
 
 {{< callout emoji="❓" >}}
