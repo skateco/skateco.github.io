@@ -26,25 +26,27 @@ sind create --ssh-private-key ~/.ssh/<some-private-ssh-key> --ssh-public-key ~/.
 ```
 
 
-BTW: you can run `sind remove` followed by `sind create...` again to run a new cluster if things get messed up.
+> **_BTW:_**
+> You can run `sind remove` followed by `sind create ...` again to run a new cluster if things get messed up.
 
 
 
-Now, let's register a cluster:
+> **_NOTE:_**
+> `sind` automatically creates the cluster via skate.
+> To do this normally you have to run the following:
+> 
+> ```shell
+> skate create cluster my-cluster --default-user <valid ssh user> --default-key ~/.ssh/<some ssh public key>
+> skate config use-context my-cluster
+> ```
+> And then add the nodes:
+> 
+> ```shell
+> 
+> skate create node --name node-1 --subnet-cidr 20.1.0.0/16 --host <ip> --peer-host <ip wrt other hosts>
+> skate create node --name node-2 --subnet-cidr 20.2.0.0/16 --host <ip> --peer-host <ip wrt other hosts>
+> ```
 
-*Note: Change ~/.ssh/id_rsa to the path to the private key that can access your nodes*.
-*Should be the same that was used with the `sindplz` script*
-
-```shell
-skate create cluster my-cluster --default-user $USER --default-key ~/.ssh/id_rsa
-```
-
-Add the nodes:
-
-```shell
-# automatically terraform the 2 nodes
-> sind skate
-```
 
 Ok, now we should have a 2 node cluster that we can deploy to.
 
