@@ -22,6 +22,7 @@ spec:
       containers:
       - name: echo
         image: nginx:1.14.2
+EOF
 ```
 
 ## DNS
