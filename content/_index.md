@@ -24,7 +24,7 @@ A lightweight, multi-host, daemonless mini-pass that supports deploying kubernet
 </div>
 
 <div class="hx-mb-6">
-{{< hextra/hero-button text="Get Started" link="docs" >}}
+{{< hextra/hero-button text="Get Started" link="docs/getting-started" >}}
 </div>
 
 
