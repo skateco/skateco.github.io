@@ -39,13 +39,18 @@ sind create --ssh-private-key ~/.ssh/<some-private-ssh-key> --ssh-public-key ~/.
 > skate create cluster my-cluster --default-user <valid ssh user> --default-key ~/.ssh/<some ssh public key>
 > skate config use-context my-cluster
 > ```
-> And then add the nodes:
+>
+> **_NOTE:_**
+> If you don't specify `--default-key` (or `--key` when doing `skate create node`) skate will check the ssh agent for identities
+> 
+> Now add the nodes:
 > 
 > ```shell
 > 
 > skate create node --name node-1 --subnet-cidr 20.1.0.0/16 --host <ip> --peer-host <ip wrt other hosts>
 > skate create node --name node-2 --subnet-cidr 20.2.0.0/16 --host <ip> --peer-host <ip wrt other hosts>
 > ```
+
 
 
 Ok, now we should have a 2 node cluster that we can deploy to.
