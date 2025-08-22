@@ -18,7 +18,7 @@ K8s, but simple
 
 <div class="hx-mb-12">
 {{< hextra/hero-subtitle >}}
-A lightweight, multi-host, daemonless mini-pass that supports deploying kubernetes manifests.
+A lightweight, multi-host, daemonless mini-paas that supports deploying kubernetes manifests.
 
 {{< /hextra/hero-subtitle >}}
 </div>
